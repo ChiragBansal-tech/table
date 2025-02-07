@@ -78,32 +78,29 @@ const Table = () => {
 
     const handleTagClick = (keyword) => {
         setSearchKeywords((prevKeywords) => prevKeywords.filter((kw) => kw !== keyword));
-        // Do not store removed tags here, only in handleClearSearch
     };
 
     const handleBackspace = (e) => {
         if (e.key === "Backspace" && !searchTerm) {
             if (removedKeywords.length > 0) {
-                // Restore all the removed tags at once
                 setSearchKeywords((prevKeywords) => [...prevKeywords, ...removedKeywords]);
-                setSearchTerm(""); // Optionally, clear the input field
-                setRemovedKeywords([]); // Clear the removed keywords after restoring
+                setSearchTerm(""); 
+                setRemovedKeywords([]); 
             }
         }
     };
 
     const handleClearSearch = () => {
-        // Store tags to be cleared
-        setRemovedKeywords([...searchKeywords]); // Save all current tags
-        setSearchKeywords([]); // Clear the search keywords
+        setRemovedKeywords([...searchKeywords]);
+        setSearchKeywords([]);  
         setSearchTerm("");
         setCurrentTag("");
-        setIsExpanded(false); // Close the search bar
+        setIsExpanded(false);
+        setData(applyFilters(Student) || []);
     };
 
     useEffect(() => {
         let filteredData = Student;
-
         searchKeywords.forEach((keyword) => {
             filteredData = filteredData.filter((student) => {
                 return (
@@ -129,21 +126,17 @@ const Table = () => {
                 setBox3(false);
             }
         }
-
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const handleSort = (key) => {
         let direction = "asc";
-
         if (sortConfig.key === key) {
             if (sortConfig.direction === "asc") direction = "desc";
             else if (sortConfig.direction === "desc") direction = "none";
         }
-
         setSortConfig({ key, direction });
-
         if (direction === "none") {
             setData(Student);
         } else {
@@ -152,7 +145,6 @@ const Table = () => {
                 if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
                 return 0;
             });
-
             setData(sortedData);
         }
     };
@@ -175,8 +167,6 @@ const Table = () => {
 
     const applyFilters = () => {
         let filteredData = Student;
-
-        // Apply search filters
         searchKeywords.forEach((keyword) => {
             filteredData = filteredData.filter((student) => {
                 return (
@@ -187,7 +177,6 @@ const Table = () => {
             });
         });
 
-        // Apply other filters
         const [minAge, maxAge] = filters.age;
         filteredData = filteredData.filter((student) => {
             return (
@@ -202,8 +191,13 @@ const Table = () => {
         setData(filteredData);
     };
 
-    const handleAgeChange = (value) => {
-        let updatedAge = value;
+    const handleAgeChange = (value, type) => {
+        let updatedAge = [...filters.age];
+        if (type === "min") {
+            updatedAge[0] = Math.min(value, updatedAge[1]); 
+        } else {
+            updatedAge[1] = Math.max(value, updatedAge[0]); 
+        }
         setFilters({ ...filters, age: updatedAge });
     };
 
@@ -227,21 +221,19 @@ const Table = () => {
         <div className="bg-white min-h-[580px] rounded-lg  p-2 min-w-screen ">
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <h1 className="text-xl md:text-2xl mb-2 md:mb-0 font-bold">Student <span className="text-blue-600">Table</span></h1>
-
             </div>
-            <div className=" flex flex-col md:flex-row md:justify-between md:items-center rounded-lg mt-2 ">
+            <div className="flex flex-col md:flex-row md:justify-between md:items-center rounded-lg mt-2 ">
                 <div className="flex items-center justify-between">
-                    <div className="flex  relative">
+                    <div className="flex relative justify-start">
                         <motion.div
                             initial={{ width: "40px" }}
                             animate={{ width: isExpanded ? "400px" : "40px" }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className={`flex items-center p-2 m-3 bg-white border rounded-full overflow-hidden max-w-[260px] md:max-w-[300px] lg:max-w-[500px] ${isExpanded ? "border-blue-500" : "border-gray-300"}`}
+                            className={`flex items-center p-2 my-3 mr-3 bg-white border rounded-full overflow-hidden max-w-[260px] md:max-w-[300px] lg:max-w-[500px] ${isExpanded ? "border-blue-500" : "border-gray-300"}`}
                         >
                             <button className="text-blue-600" onClick={() => setIsExpanded(!isExpanded)}>
                                 {isExpanded ? <CircleX className="w-5 h-5" onClick={handleClearSearch} /> : <Search className="w-5 h-5" />}
                             </button>
-
                             {isExpanded && (
                                 <>
                                     {searchKeywords.length > 0 && (
@@ -272,7 +264,6 @@ const Table = () => {
                                 </>
                             )}
                         </motion.div>
-
                     </div>
                     <div className="md:hidden relative flex items-center justify-end lg:hidden">
                         <button
@@ -283,14 +274,11 @@ const Table = () => {
                         </button>
                     </div>
                 </div>
-
                 <div className="flex justify-between">
                     <div></div>
                     <div className="flex gap-0">
                         <div className="relative flex items-center md:mr-5">
-                            <div
-                                className={`hidden lg:flex justify-between absolute md:[170px] lg:w-[390px] h-[60px] right-[10px] bg-white z-10 transition-transform duration-700 ${moveLeft ? 'transform -translate-x-[375px]' : ''}`}
-                            >
+                            <div className={`hidden lg:flex justify-between absolute md:[170px] lg:w-[390px] h-[60px] right-[10px] bg-white z-10 transition-transform duration-700 ${moveLeft ? 'transform -translate-x-[375px]' : ''}`} >
                                 <div></div>
                                 <div
                                     className={`flex justify-end p-1 px-3 md:px-3 lg:px-10 m-3 mr-0 bg-white border-[1px] rounded-lg cursor-pointer z-[4] ${isOpen ? 'border-blue-500' : ''}`}
@@ -303,8 +291,7 @@ const Table = () => {
                                     </button>
                                 </div>
                             </div>
-
-                            {!isOpen && (filters.city.length > 0 || filters.branch.length > 0 || filters.minAge > 0 || filters.maxAge < 100) && (
+                            {!isOpen && (filters.city.length > 0 || filters.branch.length > 0 || filters.age[0] !== 0 || filters.age[1] !== 100) && (
                                 <div className="hidden lg:block absolute w-[12px] h-[12px] rounded-full top-[-23px] right-[5px] bg-blue-600 z-10">
                                     <div className="absolute w-[12px] h-[12px] rounded-full bg-blue-600 animate-ping"></div>
                                 </div>
@@ -316,7 +303,7 @@ const Table = () => {
                                             <div className="flex  ">
                                                 <div className="flex flex-wrap ">
                                                     <button
-                                                        className="text-sm font-medium border rounded bg-blue1 text-blue-600 px-4 border-blue1"
+                                                        className="text-sm min-w-[85px] font-medium border rounded bg-blue1 text-blue-600 px-4 border-blue1"
                                                         onClick={() => { setBox1(!box1); toggleBox("box1"); }}
                                                     >
                                                         City {filters.city.length > 0 && `(${filters.city.length})`}
@@ -339,7 +326,7 @@ const Table = () => {
 
                                                 <div className="flex flex-wrap gap-2  px-3">
                                                     <button
-                                                        className="text-sm font-medium border px-3 p-1 rounded bg-blue1 text-blue-600 border-blue1"
+                                                        className="text-sm font-medium min-w-[96px] border px-3 p-1 rounded bg-blue1 text-blue-600 border-blue1"
                                                         onClick={() => { setBox2(!box2); toggleBox("box2"); }}
                                                     >
                                                         Branch {filters.branch.length > 0 && `(${filters.branch.length})`}
@@ -361,31 +348,33 @@ const Table = () => {
                                                 )}
 
                                                 <div className="">
-                                                    <button className="text-sm border rounded bg-blue1 text-blue-600  border-blue1 font-medium px-3 p-1" onClick={() => toggleBox("box3")}>
+                                                    <button className="text-sm border min-w-[164px] rounded bg-blue1 text-blue-600  border-blue1 font-medium px-3 p-1" onClick={() => toggleBox("box3")}>
                                                         Age Range ({filters.age[0]} - {filters.age[1]})
                                                     </button>
                                                 </div>
                                                 {box3 && (
-                                                    <div className="absolute md:left-[175px] top-[38px] bg-white px-3 p-1 border ">
+                                                    <div className="absolute md:left-[175px] top-[38px] bg-white px-3 p-1 border">
+                                                        <label className="text-xs">Min. Age:</label>
                                                         <input
                                                             type="range"
                                                             min="0"
                                                             max="100"
                                                             value={filters.age[0]}
-                                                            onChange={(e) => handleAgeChange([Number(e.target.value), filters.age[1]])}
+                                                            onChange={(e) => handleAgeChange(Number(e.target.value), "min")}
                                                             className="w-full"
                                                         />
+                                                        <label className="text-xs">Max. Age:</label>
                                                         <input
                                                             type="range"
                                                             min="0"
                                                             max="100"
                                                             value={filters.age[1]}
-                                                            onChange={(e) => handleAgeChange([filters.age[0], Number(e.target.value)])}
-                                                            className="w-full mt-2"
+                                                            onChange={(e) => handleAgeChange(Number(e.target.value), "max")}
+                                                            className="w-full"
                                                         />
                                                         <div className="flex justify-between text-sm">
-                                                            <span>{filters.age[0]}</span>
-                                                            <span>{filters.age[1]}</span>
+                                                            <span className="text-xs">Min. Age: {filters.age[0]}</span>
+                                                            <span className="text-xs">Max. Age: {filters.age[1]}</span>
                                                         </div>
                                                     </div>
                                                 )}
@@ -445,26 +434,28 @@ const Table = () => {
                                                 Age Range ({filters.age[0]} - {filters.age[1]})
                                             </button>
                                             {box3 && (
-                                                <div className="bg-white p-2 border rounded-md">
+                                                <div className="absolute md:left-[175px] top-[38px] bg-white px-3 p-1 border">
+                                                    <label className="text-xs">Min. Age:</label>
                                                     <input
                                                         type="range"
                                                         min="0"
                                                         max="100"
                                                         value={filters.age[0]}
-                                                        onChange={(e) => handleAgeChange([Number(e.target.value), filters.age[1]])}
+                                                        onChange={(e) => handleAgeChange(Number(e.target.value), "min")}
                                                         className="w-full"
                                                     />
+                                                    <label className="text-xs">Max. Age:</label>
                                                     <input
                                                         type="range"
                                                         min="0"
                                                         max="100"
                                                         value={filters.age[1]}
-                                                        onChange={(e) => handleAgeChange([filters.age[0], Number(e.target.value)])}
-                                                        className="w-full mt-2"
+                                                        onChange={(e) => handleAgeChange(Number(e.target.value), "max")}
+                                                        className="w-full"
                                                     />
                                                     <div className="flex justify-between text-sm">
-                                                        <span>{filters.age[0]}</span>
-                                                        <span>{filters.age[1]}</span>
+                                                        <span className="text-xs">Min. Age: {filters.age[0]}</span>
+                                                        <span className="text-xs">Max. Age: {filters.age[1]}</span>
                                                     </div>
                                                 </div>
                                             )}
@@ -473,18 +464,17 @@ const Table = () => {
                                             <div>
                                                 {(filters.age[0] !== 0 || filters.age[1] !== 100 || filters.city.length > 0 || filters.branch.length > 0) && (
                                                     <div className=" ">
-                                                        <button className="p-2 px-6 border-2 rounded bg-red-500 text-white" onClick={clearFilters}>Reset</button>
+                                                        <button className="p-2 px-6  rounded bg-red-500 text-white" onClick={clearFilters}>Reset</button>
                                                     </div>
                                                 )}
                                             </div>
                                             <div className="">
-                                                <button className="p-2 px-6 border-2 rounde" onClick={() => setShow2(!show2)}>Close</button>
+                                                <button className="p-2 px-6 border-2 rounded" onClick={() => setShow2(!show2)}>Close</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             )}
-
                             {(filters.age[0] !== 0 || filters.age[1] !== 100 || filters.city.length > 0 || filters.branch.length > 0) && (
                                 <div className="flex items-center">
                                     <button className={`hidden md:flex p-1 md:p-[6px] absolute top-[-6px]  md:top-[3px] ${isOpen ? 'lg:top-[1px]' : 'lg:top-[-15px]'}  md:right-[-60px] lg:right-[-25px] bg-red-500 text-white rounded`} onClick={clearFilters}>
