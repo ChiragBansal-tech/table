@@ -434,7 +434,7 @@ const Table = () => {
                                                 Age Range ({filters.age[0]} - {filters.age[1]})
                                             </button>
                                             {box3 && (
-                                                <div className="absolute md:left-[175px] top-[38px] bg-white px-3 p-1 border">
+                                                <div className="bg-white px-3 p-1 border ">
                                                     <label className="text-xs">Min. Age:</label>
                                                     <input
                                                         type="range"
@@ -464,7 +464,7 @@ const Table = () => {
                                             <div>
                                                 {(filters.age[0] !== 0 || filters.age[1] !== 100 || filters.city.length > 0 || filters.branch.length > 0) && (
                                                     <div className=" ">
-                                                        <button className="p-2 px-6  rounded bg-red-500 text-white" onClick={clearFilters}>Reset</button>
+                                                        <button className="p-2 px-6 border-2 border-red-500 rounded bg-red-500 text-white" onClick={clearFilters}>Reset</button>
                                                     </div>
                                                 )}
                                             </div>
