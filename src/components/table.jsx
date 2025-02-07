@@ -278,7 +278,7 @@ const Table = () => {
                     <div></div>
                     <div className="flex gap-0">
                         <div className="relative flex items-center md:mr-5">
-                            <div className={`hidden lg:flex justify-between absolute md:[170px] lg:w-[390px] h-[60px] right-[10px] bg-white z-10 transition-transform duration-700 ${moveLeft ? 'transform -translate-x-[375px]' : ''}`} >
+                            <div className={`hidden lg:flex justify-between absolute md:[170px] lg:w-[390px] h-[60px] right-[10px] bg-white z-10 transition-transform duration-700 ${moveLeft ? 'transform -translate-x-[385px]' : ''}`} >
                                 <div></div>
                                 <div
                                     className={`flex justify-end p-1 px-3 md:px-3 lg:px-10 m-3 mr-0 bg-white border-[1px] rounded-lg cursor-pointer z-[4] ${isOpen ? 'border-blue-500' : ''}`}
