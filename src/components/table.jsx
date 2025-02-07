@@ -229,7 +229,7 @@ const Table = () => {
                             initial={{ width: "40px" }}
                             animate={{ width: isExpanded ? "400px" : "40px" }}
                             transition={{ duration: 0.3, ease: "easeInOut" }}
-                            className={`flex items-center p-2 my-3 mr-3 bg-white border rounded-full overflow-hidden max-w-[260px] md:max-w-[300px] lg:max-w-[500px] ${isExpanded ? "border-blue-500" : "border-gray-300"}`}
+                            className={`flex items-center p-2 my-3 mr-3 bg-white border rounded-full overflow-hidden max-w-[260px] md:max-w-[270px] lg:max-w-[500px] ${isExpanded ? "border-blue-500" : "border-gray-300"}`}
                         >
                             <button className="text-blue-600" onClick={() => setIsExpanded(!isExpanded)}>
                                 {isExpanded ? <CircleX className="w-5 h-5" onClick={handleClearSearch} /> : <Search className="w-5 h-5" />}
